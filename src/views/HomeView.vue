@@ -28,8 +28,16 @@ export default {
     },
     showContact(contact) {
       this.currentContact = contact;
-      document.querySelector("#contact-details").showModal();
+      document.querySelector("#contact-details").showModal(); // streamlined version
       console.log(contact);
+    },
+    updateContact() {
+      axios.patch(`/contacts/${this.currentContact.id}`, this.currentContact).then((response) => {
+        console.log("success", response);
+        var index = this.contacts.indexOf(this.currentContact);
+        this.contacts.splice(index, 1);
+        this.contacts.push(response.data);
+      });
     },
   },
 };
@@ -66,6 +74,23 @@ export default {
         <p>Last Name: {{ currentContact.last_name }}</p>
         <p>Email: {{ currentContact.email }}</p>
         <img v-bind:src="currentContact.image" v-bind:alt="currentContact.first_name" style="max-width: 250px" />
+        <p>
+          First:
+          <input v-model="currentContact.first_name" type="text" />
+        </p>
+        <p>
+          Last:
+          <input v-model="currentContact.last_name" type="text" />
+        </p>
+        <p>
+          Email:
+          <input v-model="currentContact.email" type="text" />
+        </p>
+        <p>
+          Image:
+          <input v-model="currentContact.image" type="text" />
+        </p>
+        <button v-on:click="updateContact()">Update</button>
         <button>CLOSE</button>
       </form>
     </dialog>
